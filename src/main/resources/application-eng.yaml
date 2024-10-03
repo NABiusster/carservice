@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: Car service
+
+data-reference:
+  engine-types: gasoline, diesel, hybrid, electric
+  fuelTypes:
+    - name: gasoline
+      brand: А-95,А-98,А-100
+    - name: diesel
+      brand: winter, summer, arctic
+    - name: electric
+      brand:
