@@ -1,5 +1,13 @@
 spring:
   application:
-    name: Car service
+    name: "Car service"
   profiles:
     active: "eng"
+  datasource:
+    url: "jdbc:mysql://localhost:3306/carservice"
+    username: "nabius"
+    password: "qwerty123456"
+  jpa:
+    hibernate:
+      ddl-auto: "none"
+    show-sql: "true"

@@ -13,27 +13,27 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 public class DataReferenceController {
-    @Value("${data-reference.engine-types}")
-    private List<String> engineTypes;
+//    @Value("${data-reference.engine-types}")
+//    private List<String> engineTypes;
 
     private final DataReferenceProperties dataReferenceProperties;
 
-    @GetMapping("/engine-types")
-    public List<String> getEngineTypes() {
-        return engineTypes;
-    }
-
-    @GetMapping("/fuel-types")
-    public List<FuelType> getFuelTypes() {
-        return dataReferenceProperties.getFuelTypes();
-    }
-
-    @GetMapping("/fuel-types/{fuelName}")
-    public FuelType getFuelType(@PathVariable String fuelName) {
-        return dataReferenceProperties.getFuelTypes().stream()
-                .filter(fuelType -> fuelName.equals(fuelType.getName()))
-                .findFirst()
-                .orElse(null);
-    }
+//    @GetMapping("/engine-types")
+//    public List<String> getEngineTypes() {
+//        return engineTypes;
+//    }
+//
+//    @GetMapping("/fuel-types")
+//    public List<FuelType> getFuelTypes() {
+//        return dataReferenceProperties.getFuelTypes();
+//    }
+//
+//    @GetMapping("/fuel-types/{fuelName}")
+//    public FuelType getFuelType(@PathVariable String fuelName) {
+//        return dataReferenceProperties.getFuelTypes().stream()
+//                .filter(fuelType -> fuelName.equals(fuelType.getName()))
+//                .findFirst()
+//                .orElse(null);
+//    }
 
 }

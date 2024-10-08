@@ -1,0 +1,23 @@
+services:
+
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db_data:/var/lib/mysql/
+    environment:
+      MYSQL_DATABASE: carservice
+      MYSQL_USER: nabius
+      MYSQL_PASSWORD: qwerty123456
+      MYSQL_ROOT_PASSWORD: QWERTY123456
+
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin:latest
+#    restart: always
+#    ports:
+#      - "8080:80"
+#    environment:
+#      PMA_HOST: db
+#      MYSQL_ROOT_PASSWORD: qwerty123456
