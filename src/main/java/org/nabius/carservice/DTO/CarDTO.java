@@ -1,11 +1,13 @@
-package org.nabius.carservice.dto;
+package org.nabius.carservice.DTO;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.nabius.carservice.Enum.FuelType;
 
+import java.util.List;
+
 @Data
-public class CarDto {
+public class CarDTO {
     private Long id;
     @NotBlank (message = "must be not blank")
     private String model;

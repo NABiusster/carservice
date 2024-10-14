@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.nabius.carservice.Enum.FuelType;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "cars")
 @Data
@@ -19,5 +21,9 @@ public class Car {
     @Column(name = "fuel_type")
     @Enumerated(EnumType.STRING)
     private FuelType fuelType;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn
+    private Owner owner;
+    private LocalDateTime lastMaintenanceTimestamp;
 
 }

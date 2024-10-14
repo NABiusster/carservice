@@ -1,11 +1,12 @@
 package org.nabius.carservice.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.dto.CarDto;
+import org.nabius.carservice.DTO.CarDTO;
 import org.nabius.carservice.entity.Car;
+import org.nabius.carservice.entity.Owner;
 import org.nabius.carservice.mapper.CarMapper;
 import org.nabius.carservice.repository.CarRepository;
+import org.nabius.carservice.repository.OwnerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +16,10 @@ import java.util.List;
 public class CarService {
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final OwnerRepository ownerRepository;
 
 
-    public List<CarDto> getCars(Integer minEnginePower, Integer maxEnginePower) {
+    public List<CarDTO> getCars(Integer minEnginePower, Integer maxEnginePower) {
         if (minEnginePower != null && maxEnginePower != null) {
             return findAllByEnginePowerBetween(minEnginePower, maxEnginePower);
         } else if (minEnginePower != null) {
@@ -29,61 +31,63 @@ public class CarService {
         }
     }
 
-    public List<CarDto> getAllCars() {
+    public List<CarDTO> getAllCars() {
         return carRepository
                 .findAll()
                 .stream()
-                .map(carMapper::mapToDto)
+                .map(carMapper::mapToDTO)
                 .toList();
     }
 
-    public CarDto findCarById(Long id) {
-        return carMapper.mapToDto(carRepository.findById(id).orElseThrow());
+    public CarDTO findCarById(Long id) {
+        return carMapper.mapToDTO(carRepository.findById(id).orElseThrow());
     }
 
-    public List<CarDto> findAllByEnginePowerBetween(int minEnginePower, int maxEnginePower) {
+    public List<CarDTO> findAllByEnginePowerBetween(int minEnginePower, int maxEnginePower) {
         return carRepository
                 .findAllByEnginePowerBetween(minEnginePower, maxEnginePower)
                 .stream()
-                .map(carMapper::mapToDto)
+                .map(carMapper::mapToDTO)
                 .toList();
     }
 
-    public List<CarDto> findAllByEnginePowerGreaterThan(int minEnginePower) {
+    public List<CarDTO> findAllByEnginePowerGreaterThan(int minEnginePower) {
         return carRepository
                 .findAllByEnginePowerGreaterThan(minEnginePower)
                 .stream()
-                .map(carMapper::mapToDto)
+                .map(carMapper::mapToDTO)
                 .toList();
     }
 
-    public List<CarDto> findAllByEnginePowerLessThan(int maxEnginePower) {
+    public List<CarDTO> findAllByEnginePowerLessThan(int maxEnginePower) {
         return carRepository
                 .findAllByEnginePowerLessThan(maxEnginePower)
                 .stream()
-                .map(carMapper::mapToDto)
+                .map(carMapper::mapToDTO)
                 .toList();
     }
 
-    public CarDto addCar(CarDto carDto) {
-        Car car = carMapper.mapToEntity(carDto);
+    public CarDTO addCar(String userName, CarDTO carDTO) {
+        Owner owner = ownerRepository.findByUsername(userName).orElseThrow();
+        Car car = carMapper.mapToEntity(carDTO);
+        car.setOwner(owner);
         car = carRepository.save(car);
-        return carMapper.mapToDto(car);
+        return carMapper.mapToDTO(car);
     }
 
-    public CarDto updateCar(Long id, CarDto carDto) {
+    public CarDTO updateCar(Long id, CarDTO carDTO) {
         Car car = carRepository.findById(id).orElseThrow();
-        car.setModel(carDto.getModel());
-        car.setEnginePower(carDto.getEnginePower());
-        car.setTorque(carDto.getTorque());
-        car.setFuelType(carDto.getFuelType());
-        return carMapper.mapToDto(car);
+        car.setModel(carDTO.getModel());
+        car.setEnginePower(carDTO.getEnginePower());
+        car.setTorque(carDTO.getTorque());
+        car.setFuelType(carDTO.getFuelType());
+        return carMapper.mapToDTO(car);
 
     }
 
-    public CarDto deleteCar(Long carId) {
+    public CarDTO deleteCar(Long carId) {
         Car car = carRepository.findById(carId).orElseThrow();
         carRepository.delete(car);
-        return carMapper.mapToDto(car);
+        return carMapper.mapToDTO(car);
     }
 }

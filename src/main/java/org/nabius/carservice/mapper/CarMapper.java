@@ -1,32 +1,30 @@
 package org.nabius.carservice.mapper;
 
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.dto.CarDto;
+import org.nabius.carservice.DTO.CarDTO;
 import org.nabius.carservice.entity.Car;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class CarMapper {
-    public Car mapToEntity(CarDto carDto) {
+    public Car mapToEntity(CarDTO carDTO) {
         Car car = new Car();
-        car.setId(carDto.getId());
-        car.setModel(carDto.getModel());
-        car.setEnginePower(carDto.getEnginePower());
-        car.setTorque(carDto.getTorque());
-        car.setFuelType(carDto.getFuelType());
+        car.setId(carDTO.getId());
+        car.setModel(carDTO.getModel());
+        car.setEnginePower(carDTO.getEnginePower());
+        car.setTorque(carDTO.getTorque());
+        car.setFuelType(carDTO.getFuelType());
         return car;
     }
 
-    public CarDto mapToDto(Car car) {
-        CarDto carDto = new CarDto();
-        carDto.setId(car.getId());
-        carDto.setModel(car.getModel());
-        carDto.setEnginePower(car.getEnginePower());
-        carDto.setTorque(car.getTorque());
-        carDto.setFuelType(car.getFuelType());
-        return carDto;
+    public CarDTO mapToDTO(Car car) {
+        CarDTO carDTO = new CarDTO();
+        carDTO.setId(car.getId());
+        carDTO.setModel(car.getModel());
+        carDTO.setEnginePower(car.getEnginePower());
+        carDTO.setTorque(car.getTorque());
+        carDTO.setFuelType(car.getFuelType());
+        return carDTO;
     }
 }

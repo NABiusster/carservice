@@ -2,7 +2,7 @@ package org.nabius.carservice.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.dto.CarDto;
+import org.nabius.carservice.DTO.CarDTO;
 import org.nabius.carservice.service.CarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,12 +12,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/cars")
 public class CarController {
     private final CarService carService;
 
     //    GET /cars - повертає список усіх авто
-    @GetMapping("/cars")
-    public ResponseEntity<List<CarDto>> getCars(
+    @GetMapping()
+    public ResponseEntity<List<CarDTO>> getCars(
             @RequestParam(name = "minEnginePower", required = false) Integer minEnginePower,
             @RequestParam(name = "maxEnginePower", required = false) Integer maxEnginePower
     ) {
@@ -25,27 +26,27 @@ public class CarController {
     }
 
     //    GET /cars/{id} - повертає конкретне авто по ІД
-    @GetMapping("/cars/{id}")
-    public ResponseEntity<CarDto> getCar(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<CarDTO> getCar(@PathVariable Long id) {
         return ResponseEntity.ok(carService.findCarById(id));
     }
 
     //    POST /cars - створює нове авто
-    @PostMapping("/cars")
-    public CarDto addCar(@RequestBody @Valid CarDto carDto) {
-        return carService.addCar(carDto);
+    @PostMapping()
+    public CarDTO addCar(@RequestParam String userName, @RequestBody @Valid CarDTO carDTO) {
+        return carService.addCar(userName, carDTO);
     }
 
     //    PUT /cars/{id} - оновлює дані про авто по ІД
     @Transactional
-    @PutMapping("/cars/{id}")
-    public ResponseEntity<CarDto> updateCar(@PathVariable(name = "id") Long id, @RequestBody @Valid CarDto carDto) {
-        return ResponseEntity.ok(carService.updateCar(id,carDto));
+    @PutMapping("/{id}")
+    public ResponseEntity<CarDTO> updateCar(@PathVariable(name = "id") Long id, @RequestBody @Valid CarDTO carDTO) {
+        return ResponseEntity.ok(carService.updateCar(id,carDTO));
     }
 
     //    DELETE /cars/{id} - видалити авто по ІД
-    @DeleteMapping("/cars/{id}")
-    public ResponseEntity<CarDto> deleteCar(@PathVariable(name = "id") Long carId) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CarDTO> deleteCar(@PathVariable(name = "id") Long carId) {
         return ResponseEntity.ok(carService.deleteCar(carId));
     }
 }

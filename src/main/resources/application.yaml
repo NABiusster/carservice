@@ -4,10 +4,20 @@ spring:
   profiles:
     active: "eng"
   datasource:
-    url: "jdbc:mysql://localhost:3306/carservice"
-    username: "nabius"
-    password: "qwerty123456"
+    url: jdbc:mysql://localhost:3306/carservice
+    username: nabius
+    password: qwerty123456
+    driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: "none"
-    show-sql: "true"
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+
+  data:
+    mongodb:
+      uri: mongodb+srv://nabiusster:Artur2008@cluster0.fjqpr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      database: maintenances-db

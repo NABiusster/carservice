@@ -1,6 +1,6 @@
 package org.nabius.carservice.controllers;
 
-import org.nabius.carservice.dto.ErrorDto;
+import org.nabius.carservice.DTO.ErrorDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 public class ErrorController {
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<ErrorDto> handleIllegalArgumentError(Exception e) {
+    public ResponseEntity<ErrorDTO> handleIllegalArgumentError(Exception e) {
         return ResponseEntity
                 .badRequest()
-                .body(ErrorDto.builder()
+                .body(ErrorDTO.builder()
                         .message(e.getMessage())
                         .timestamp(LocalDateTime.now())
                         .build());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         String details = e
                 .getBindingResult()
                 .getFieldErrors()
@@ -33,7 +33,7 @@ public class ErrorController {
 
         return ResponseEntity
                 .badRequest()
-                .body(ErrorDto.builder()
+                .body(ErrorDTO.builder()
                         .message(details)
                         .timestamp(LocalDateTime.now())
                         .build());
