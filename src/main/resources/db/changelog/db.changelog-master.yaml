@@ -1,95 +1,68 @@
 databaseChangeLog:
   - changeSet:
-      id: "1.0.1"
-      author: "NABius"
+      id: 1.0.1
+      author: NABius
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
-            tableName: "cars"
             columns:
               - column:
-                  name: "id"
-                  type: "bigint"
                   autoIncrement: true
                   constraints:
+                    nullable: false
                     primaryKey: true
+                    primaryKeyName: pk_cars
+                  name: id
+                  type: BIGINT
               - column:
-                  name: "model"
-                  type: "text"
+                  name: model
+                  type: VARCHAR(255)
               - column:
-                  name: "engine_power"
-                  type: "numeric"
+                  name: engine_power
+                  type: INT
+              - column:
+                  name: torque
+                  type: DOUBLE
+              - column:
+                  name: last_maintenance_timestamp
+                  type: DATETIME
+              - column:
+                  name: owner_id
+                  type: BIGINT
+              - column:
+                  name: fuel_type
+                  type: TINYINT
+            tableName: cars
   - changeSet:
-      id: "1.0.2"
-      author: "NABius"
-      changes:
-        - addColumn:
-            columns:
-              - column:
-                  name: "torque"
-                  type: "double"
-            tableName: "cars"
-  - changeSet:
-      id: "1.0.3"
-      author: "NABius"
-      changes:
-        - addColumn:
-            tableName: "cars"
-            columns:
-              - column:
-                  name: "fuel_type"
-                  type: "text"
-  - changeSet:
-      id: "1.0.4"
-      author: "NABius"
+      id: 1.0.2
+      author: NABius
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
-            tableName: "owners"
             columns:
               - column:
-                  name: "id"
-                  type: "bigint"
                   autoIncrement: true
                   constraints:
+                    nullable: false
                     primaryKey: true
+                    primaryKeyName: pk_owners
+                  name: id
+                  type: BIGINT
               - column:
-                  name: "username"
-                  type: "text"
+                  name: username
+                  type: VARCHAR(255)
               - column:
-                  name: "email"
-                  type: "text"
+                  name: email
+                  type: VARCHAR(255)
+            tableName: owners
   - changeSet:
-      id: "1.0.5"
-      author: "NABius"
+      id: 1.0.3
+      author: NABius
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
-        - addColumn:
-            tableName: "cars"
-            columns:
-              - column:
-                  name: "owner_id"
-                  type: "bigint"
-
         - addForeignKeyConstraint:
-            baseColumnNames: "owner_id"
-            baseTableName: "cars"
-            constraintName: "cars_ibfk_1"
-            onDelete: "CASCADE"
-            referencedColumnNames: "id"
-            referencedTableName: "owners"
-
-        - createIndex:
-            columns:
-              - column:
-                  name: "owner_id"
-            indexName: "owner_id"
-            tableName: "cars"
-
-  - changeSet:
-      id: "1.0.6"
-      author: "NABius"
-      changes:
-        - addColumn:
-            columns:
-              - column:
-                  name: "last_maintenance_timestamp"
-                  type: "DATETIME"
-            tableName: "cars"
+            baseColumnNames: owner_id
+            baseTableName: cars
+            constraintName: FK_CARS_ON_OWNER
+            referencedColumnNames: id
+            referencedTableName: owners

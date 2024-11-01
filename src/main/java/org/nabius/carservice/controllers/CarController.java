@@ -1,52 +1,93 @@
 package org.nabius.carservice.controllers;
 
-import jakarta.validation.Valid;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.DTO.CarDTO;
+import org.nabius.carservice.api.DTO.CarDTO;
+import org.nabius.carservice.api.DTO.MaintenanceDTO;
+import org.nabius.carservice.api.controllers.CarsApi;
 import org.nabius.carservice.service.CarService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cars")
-public class CarController {
-    private final CarService carService;
+public class CarController implements CarsApi {
 
-    //    GET /cars - повертає список усіх авто
-    @GetMapping()
-    public ResponseEntity<List<CarDTO>> getCars(
-            @RequestParam(name = "minEnginePower", required = false) Integer minEnginePower,
-            @RequestParam(name = "maxEnginePower", required = false) Integer maxEnginePower
-    ) {
-       return ResponseEntity.ok(carService.getCars(minEnginePower, maxEnginePower));
+    private final CarService carservice;
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<CarDTO> addCar(String username, CarDTO carDTO) {
+        return ResponseEntity.ok(carservice.addCar(username, carDTO));
     }
 
-    //    GET /cars/{id} - повертає конкретне авто по ІД
-    @GetMapping("/{id}")
-    public ResponseEntity<CarDTO> getCar(@PathVariable Long id) {
-        return ResponseEntity.ok(carService.findCarById(id));
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<MaintenanceDTO> addMaintenance(Long carId, MaintenanceDTO maintenanceDTO) {
+        return ResponseEntity.ok(carservice.addMaintenance(carId, maintenanceDTO));
     }
 
-    //    POST /cars - створює нове авто
-    @PostMapping()
-    public CarDTO addCar(@RequestParam String userName, @RequestBody @Valid CarDTO carDTO) {
-        return carService.addCar(userName, carDTO);
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<Void> deleteCar(Long id) {
+        carservice.deleteCar(id);
+        return ResponseEntity.noContent().build();
     }
 
-    //    PUT /cars/{id} - оновлює дані про авто по ІД
-    @Transactional
-    @PutMapping("/{id}")
-    public ResponseEntity<CarDTO> updateCar(@PathVariable(name = "id") Long id, @RequestBody @Valid CarDTO carDTO) {
-        return ResponseEntity.ok(carService.updateCar(id,carDTO));
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<Void> deleteMaintenance(Long id) {
+        carservice.deleteMaintenance(id);
+        return ResponseEntity.noContent().build();
     }
 
-    //    DELETE /cars/{id} - видалити авто по ІД
-    @DeleteMapping("/{id}")
-    public ResponseEntity<CarDTO> deleteCar(@PathVariable(name = "id") Long carId) {
-        return ResponseEntity.ok(carService.deleteCar(carId));
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
+    public ResponseEntity<CarDTO> getCar(Long carId) {
+        return ResponseEntity.of(carservice.findCar(carId));
+    }
+
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
+    public ResponseEntity<List<CarDTO>> getCars() {
+        return ResponseEntity.ok(carservice.findCars());
+    }
+
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
+    public ResponseEntity<MaintenanceDTO> getMaintenance(Long id) {
+        return ResponseEntity.of(carservice.findMaintenance(id));
+    }
+
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
+    public ResponseEntity<List<MaintenanceDTO>> getMaintenances(Long carId) {
+        return ResponseEntity.ok(carservice.findMaintenances(carId));
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<CarDTO> modifyCar(Long id, CarDTO carDTO) {
+        return ResponseEntity.of(carservice.modifyCar(id, carDTO));
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<CarDTO> modifyCarPartially(Long id, CarDTO carDTO) {
+        return ResponseEntity.of(carservice.modifyCarPartially(id, carDTO));
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<MaintenanceDTO> updateMaintenance(Long id, MaintenanceDTO maintenanceDTO) {
+        return ResponseEntity.of(carservice.updateMaintenance(id, maintenanceDTO));
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<MaintenanceDTO> updateMaintenancePartially(Long id, MaintenanceDTO maintenanceDTO) {
+        return ResponseEntity.of(carservice.updateMaintenancePartially(id, maintenanceDTO));
     }
 }

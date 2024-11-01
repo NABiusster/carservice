@@ -1,0 +1,548 @@
+openapi: 3.0.3
+info:
+  title: Car service API
+  description: Car service API
+  version: 1.0.0
+servers:
+  - url: https://localhost:8080/api
+tags:
+  - name: Car
+    description: All about cars
+  #  - name: Maintenance
+  #    description: Cars maintenances
+  - name: Owner
+    description: Car Owners
+paths:
+  /cars:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Get cars
+      description: Fetch cars
+      operationId: getCars
+      responses:
+        200:
+          $ref: "#/components/responses/CarList"
+    post:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Add new car
+      description: Add new car for owner
+      operationId: addCar
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            example: NABius
+          description: Owner username
+      requestBody:
+        $ref: "#/components/requestBodies/Car"
+      responses:
+        201:
+          $ref: "#/components/responses/Car"
+        400:
+          description: Invalid input
+        422:
+          description: Validation exception
+  /cars/{id}:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Get specific car
+      description: Get car by id
+      operationId: getCar
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Car ID
+      responses:
+        200:
+          $ref: "#/components/responses/Car"
+        400:
+          description: Invalid request
+    put:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Modify specific car
+      description: Update car properties included in the body
+      operationId: modifyCar
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Car ID
+      requestBody:
+        $ref: "#/components/requestBodies/Car"
+      responses:
+        201:
+          $ref: "#/components/responses/Car"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    patch:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Modify specific car partially
+      description: Update only car properties included in the body
+      operationId: modifyCarPartially
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Car ID
+      requestBody:
+        $ref: "#/components/requestBodies/Car"
+      responses:
+        201:
+          $ref: "#/components/responses/Car"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    delete:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Delete car
+      operationId: deleteCar
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Car ID
+      responses:
+        204:
+          description: Car deleted
+  /cars/{carId}/maintenances:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: GET cars/{carId}/maintenances
+      operationId: getMaintenances
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Car Id
+      responses:
+        200:
+          $ref: "#/components/responses/MaintenanceList"
+    post:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: POST cars/{carId}/maintenances
+      operationId: addMaintenance
+      parameters:
+        - name: carId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/Maintenance"
+      responses:
+        201:
+          $ref: "#/components/responses/Maintenance"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+  /cars/maintenances/{id}:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Car
+      summary: Get specific maintenance
+      description: Get maintenance by id
+      operationId: getMaintenance
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Maintenance ID
+      responses:
+        200:
+          $ref: "#/components/responses/Maintenance"
+        400:
+          description: Invalid request
+    put:
+      tags:
+        - Car
+      summary: Update maintenance with Id
+      description: Update maintenance with Id
+      operationId: updateMaintenance
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/Maintenance"
+      responses:
+        200:
+          $ref: "#/components/responses/Maintenance"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    patch:
+      tags:
+        - Car
+      summary: Partially update maintenance with Id
+      description: Partially update maintenance with Id
+      operationId: updateMaintenancePartially
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Maintenance  Id
+      requestBody:
+        $ref: "#/components/requestBodies/Maintenance"
+      responses:
+        201:
+          $ref: "#/components/responses/Maintenance"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    delete:
+      tags:
+        - Car
+      security:
+        - BearerAuth: [ ]
+      summary: Delete maintenance
+      operationId: deleteMaintenance
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Maintenance ID
+      responses:
+        204:
+          description: Maintenance deleted
+
+  /owners:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Get all owners
+      description: Fetch all existing owners
+      operationId: getOwners
+      responses:
+        200:
+          $ref: "#/components/responses/OwnerList"
+    post:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Create  owner
+      description: Create  owner
+      operationId: createOwner
+      requestBody:
+        $ref: "#/components/requestBodies/Owner"
+      responses:
+        200:
+          $ref: "#/components/responses/Owner"
+        400:
+          description: Invalid input
+        422:
+          description: Validation exception
+
+  /owners/{id}:
+    get:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Get owner Id
+      description: Get owner by id
+      operationId: getOwnerById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Owner ID
+      responses:
+        200:
+          $ref: "#/components/responses/Owner"
+        400:
+          description: Invalid request
+    put:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Update owner with id
+      operationId: updateOwner
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        $ref: "#/components/requestBodies/Owner"
+      responses:
+        200:
+          $ref: "#/components/responses/Owner"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    patch:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Partially update owner with Id
+      description: Partially update owner with Id
+      operationId: updateOwnerPartially
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Owner  Id
+      requestBody:
+        $ref: "#/components/requestBodies/Owner"
+      responses:
+        200:
+          $ref: "#/components/responses/Owner"
+        400:
+          description: Invalid request
+        422:
+          description: Validation exception
+    delete:
+      security:
+        - BearerAuth: [ ]
+      tags:
+        - Owner
+      summary: Delete Owner
+      operationId: deleteOwner
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Owner ID
+      responses:
+        204:
+          description: Owner deleted
+
+
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    FuelType:
+      type: string
+      enum:
+        - GASOLINE,
+        - DIESEL,
+        - ELECTRIC
+    Owner:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 10
+        username:
+          type: string
+          example: NABius
+        email:
+          type: string
+          example: nabius@ukr.net
+        cars:
+          type: array
+          items:
+            $ref: "#/components/schemas/Car"
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 10
+        model:
+          type: string
+          example: Ford
+        enginePower:
+          type: integer
+          format: int32
+          example: 1400
+        torque:
+          type: number
+          format: double
+          example: 1.4
+        fuelType:
+          type: string
+          enum:
+            - GASOLINE
+            - DIESEL
+            - ELECTRIC
+          example: GASOLINE
+        owner:
+          $ref: "#/components/schemas/Owner"
+        lastMaintenanceTimestamp:
+          type: string
+          format: date-time
+
+
+    Maintenance:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          example: 10
+        carId:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Exchange oil
+        description:
+          type: string
+          example: Works of exchange oil
+        price:
+          type: number
+          format: double
+          example: 1500,00
+        timestamp:
+          type: string
+          format: date-time
+          example: 2017-07-21T17:32:28Z
+  responses:
+    Car:
+      description: Car
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Car"
+    CarList:
+      description: Car list
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Car"
+    Maintenance:
+      description: Maintenance
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Maintenance"
+    MaintenanceList:
+      description: Maintenance List
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Maintenance"
+    Owner:
+      description: Owner
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Owner"
+    OwnerList:
+      description: Owner List
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Owner"
+
+  requestBodies:
+    Car:
+      description: Car to be created or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Car"
+    Maintenance:
+      description: Maintenance to be created or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Maintenance"
+    Owner:
+      description: Owner to be created or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Owner"

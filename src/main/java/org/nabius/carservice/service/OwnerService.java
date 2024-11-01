@@ -1,13 +1,15 @@
 package org.nabius.carservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.DTO.OwnerDTO;
+import org.nabius.carservice.api.DTO.OwnerDTO;
 import org.nabius.carservice.entity.Owner;
 import org.nabius.carservice.mapper.OwnerMapper;
 import org.nabius.carservice.repository.OwnerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,28 +17,39 @@ public class OwnerService {
     private final OwnerRepository ownerRepository;
     private final OwnerMapper ownerMapper;
 
-    public List<OwnerDTO> getAllOwners() {
-        return ownerRepository.findAll()
-                .stream()
-                .map(ownerMapper::mapToDTO)
-                .toList();
-    }
-    public OwnerDTO getOwnerById(Long id) {
-        return ownerMapper.mapToDTO(ownerRepository.findById(id).orElseThrow());
-    }
     public OwnerDTO createOwner(OwnerDTO ownerDTO) {
-        Owner owner = ownerMapper.mapToEntity(ownerDTO);
-        return ownerMapper.mapToDTO(ownerRepository.save(owner));
+        Owner owner = this.ownerMapper.mapToEntity(ownerDTO);
+        return this.ownerMapper.mapToDto(this.ownerRepository.save(owner));
     }
-    public OwnerDTO updateOwner(Long id, OwnerDTO ownerDTO) {
-        Owner owner = ownerRepository.findById(id).orElseThrow();
-        owner.setEmail(ownerDTO.getEmail());
-        owner.setUsername(ownerDTO.getUsername());
-        return ownerMapper.mapToDTO(ownerRepository.save(owner));
+
+    @Transactional
+    public OwnerDTO updateOwner(Long ownerId, OwnerDTO ownerDTO) {
+        return this.ownerRepository.findById(ownerId)
+                .map(owner -> this.ownerMapper.update(ownerDTO, owner))
+                .map(ownerMapper::mapToDto)
+                .orElseThrow(() -> new IllegalArgumentException("Owner not found"));
     }
-    public OwnerDTO deleteOwner(Long id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow();
-        ownerRepository.delete(owner);
-        return ownerMapper.mapToDTO(owner);
+
+    public void deleteOwner(Long ownerId) {
+        Owner owner = this.ownerRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("Owner not found"));
+        this.ownerRepository.delete(owner);
+    }
+
+    public Optional<OwnerDTO> getOwner(Long ownerId) {
+        return this.ownerRepository.findById(ownerId).map(ownerMapper::mapToDto);
+    }
+
+    public List<OwnerDTO> getAllOwners() {
+        return this.ownerRepository.findAll().stream().map(ownerMapper::mapToDto).toList();
+
+    }
+
+    @Transactional
+    public OwnerDTO updateOwnerPartially(Long ownerId, OwnerDTO ownerDTO) {
+        return this.ownerRepository.findById(ownerId)
+                .map(owner -> this.ownerMapper.partialUpdate(ownerDTO, owner))
+                .map(ownerMapper::mapToDto)
+                .orElseThrow(() -> new IllegalArgumentException("Owner not found"));
     }
 }

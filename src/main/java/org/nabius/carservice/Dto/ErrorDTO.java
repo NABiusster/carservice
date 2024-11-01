@@ -1,4 +1,4 @@
-package org.nabius.carservice.DTO;
+package org.nabius.carservice.Dto;
 
 import lombok.Builder;
 import lombok.Data;

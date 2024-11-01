@@ -21,3 +21,21 @@ spring:
     mongodb:
       uri: mongodb+srv://nabiusster:Artur2008@cluster0.fjqpr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: maintenances-db
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8083/realms/carservice
+          jwk-set-uri: http://localhost:8083/realms/carservice/protocol/openid-connect/certs
+
+      client:
+        registration:
+          keycloak:
+            client-id: carservice
+
+logging:
+  level:
+    org:
+      springframework:
+        security: trace

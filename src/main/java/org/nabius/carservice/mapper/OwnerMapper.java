@@ -1,38 +1,19 @@
 package org.nabius.carservice.mapper;
 
-import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.DTO.OwnerDTO;
+import org.mapstruct.*;
+import org.nabius.carservice.api.DTO.OwnerDTO;
 import org.nabius.carservice.entity.Owner;
-import org.springframework.stereotype.Component;
 
-@Component
-@RequiredArgsConstructor
-public class OwnerMapper {
-    private final CarMapper carMapper;
+@Mapper(unmappedTargetPolicy = ReportingPolicy.WARN, componentModel = MappingConstants.ComponentModel.SPRING)
+public interface OwnerMapper {
+    org.nabius.carservice.entity.Owner mapToEntity(OwnerDTO ownerDTO);
 
-    public Owner mapToEntity(OwnerDTO ownerDTO) {
-        Owner owner = new Owner();
-        owner.setUsername(ownerDTO.getUsername());
-        owner.setEmail(ownerDTO.getEmail());
-        owner.setCars(
-                ownerDTO.getCars()
-                        .stream()
-                        .map(carMapper::mapToEntity)
-                        .toList()
-        );
-        return owner;
-    }
+    @Mapping(target = "cars.owner" , ignore = true)
+    OwnerDTO mapToDto(org.nabius.carservice.entity.Owner owner);
 
-    public OwnerDTO mapToDTO(Owner owner) {
-        OwnerDTO ownerDTO = new OwnerDTO();
-        ownerDTO.setUsername(owner.getUsername());
-        ownerDTO.setEmail(owner.getEmail());
-        ownerDTO.setCars(
-                owner.getCars()
-                        .stream()
-                        .map(carMapper::mapToDTO)
-                        .toList()
-        );
-        return ownerDTO;
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Owner partialUpdate(OwnerDTO ownerDTO, @MappingTarget Owner owner);
+
+    Owner update(OwnerDTO ownerDTO, @MappingTarget Owner owner);
+
 }

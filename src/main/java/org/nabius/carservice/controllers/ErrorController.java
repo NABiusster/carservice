@@ -1,12 +1,13 @@
 package org.nabius.carservice.controllers;
 
-import org.nabius.carservice.DTO.ErrorDTO;
+import org.nabius.carservice.Dto.ErrorDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -28,7 +29,7 @@ public class ErrorController {
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(error -> error.getField().concat(" ").concat(error.getDefaultMessage()))
+                .map(error -> error.getField().concat(" ").concat(Objects.requireNonNull(error.getDefaultMessage())))
                 .collect(Collectors.joining(".\n"));
 
         return ResponseEntity

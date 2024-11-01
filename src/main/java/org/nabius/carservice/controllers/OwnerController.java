@@ -1,44 +1,56 @@
 package org.nabius.carservice.controllers;
 
-import jakarta.validation.Valid;
+import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
-import org.nabius.carservice.DTO.OwnerDTO;
+import org.nabius.carservice.api.DTO.OwnerDTO;
+import org.nabius.carservice.api.controllers.OwnersApi;
 import org.nabius.carservice.service.OwnerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/owners")
-public class OwnerController {
+//@RequestMapping("/owners")
+public class OwnerController implements OwnersApi {
+
     private final OwnerService ownerService;
 
-    @GetMapping()
+    @Override
+    @RolesAllowed({"ADMIN"})
+    public ResponseEntity<OwnerDTO> createOwner(OwnerDTO ownerDTO) {
+        return ResponseEntity.ok(this.ownerService.createOwner(ownerDTO));
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<Void> deleteOwner(Long id) {
+        this.ownerService.deleteOwner(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
+    public ResponseEntity<OwnerDTO> getOwnerById(Long id) {
+        return ResponseEntity.of(this.ownerService.getOwner(id));
+    }
+
+    @RolesAllowed({"USER", "ADMIN"})
+    @Override
     public ResponseEntity<List<OwnerDTO>> getOwners() {
-        return ResponseEntity.ok(ownerService.getAllOwners());
+        return ResponseEntity.ok(this.ownerService.getAllOwners());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<OwnerDTO> getOwner(@PathVariable Long id) {
-        return ResponseEntity.ok(ownerService.getOwnerById(id));
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<OwnerDTO> updateOwner(Long id, OwnerDTO ownerDTO) {
+        return ResponseEntity.ok(this.ownerService.updateOwner(id, ownerDTO));
     }
 
-    @PostMapping()
-    public ResponseEntity<OwnerDTO> createOwner(@RequestBody @Valid OwnerDTO ownerDTO) {
-        return ResponseEntity.ok(ownerService.createOwner(ownerDTO));
-    }
-
-    @Transactional
-    @PutMapping("/{id}")
-    public ResponseEntity<OwnerDTO> updateOwner(@PathVariable Long id, @RequestBody @Valid OwnerDTO ownerDTO) {
-        return ResponseEntity.ok(ownerService.updateOwner(id, ownerDTO));
-    }
-
-    @DeleteMapping("/{id})")
-    public ResponseEntity<OwnerDTO> deleteOwner(@PathVariable Long id) {
-        return ResponseEntity.ok(ownerService.deleteOwner(id));
+    @RolesAllowed({"ADMIN"})
+    @Override
+    public ResponseEntity<OwnerDTO> updateOwnerPartially(Long id, OwnerDTO ownerDTO) {
+        return ResponseEntity.ok(this.ownerService.updateOwnerPartially(id, ownerDTO));
     }
 }
