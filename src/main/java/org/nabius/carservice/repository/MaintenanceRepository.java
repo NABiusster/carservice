@@ -1,5 +1,6 @@
 package org.nabius.carservice.repository;
 
+import org.bson.types.ObjectId;
 import org.nabius.carservice.entity.Maintenance;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

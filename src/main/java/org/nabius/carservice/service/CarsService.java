@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class CarService {
+public class CarsService {
     private final CarMapper carMapper;
     private final CarRepository carRepository;
     private final OwnerRepository ownerRepository;

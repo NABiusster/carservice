@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.nabius.carservice.api.DTO.CarDTO;
 import org.nabius.carservice.api.DTO.MaintenanceDTO;
 import org.nabius.carservice.api.controllers.CarsApi;
-import org.nabius.carservice.service.CarService;
+import org.nabius.carservice.service.CarsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarController implements CarsApi {
 
-    private final CarService carservice;
+    private final CarsService carservice;
 
     @RolesAllowed({"ADMIN"})
     @Override

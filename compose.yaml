@@ -5,9 +5,41 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./db_data:/var/lib/mysql/
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: carservice
       MYSQL_USER: nabius
       MYSQL_PASSWORD: qwerty123456
       MYSQL_ROOT_PASSWORD: QWERTY123456
+    networks:
+      - keycloak_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start
+    environment:
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: true
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HEALTH_ENABLED: true
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: password
+      KC_DB: mysql
+      KC_DB_URL: jdbc:mysql://mysql_cars:3306/keycloak
+      KC_DB_USERNAME: keycloak_db_user
+      KC_DB_PASSWORD: keycloak_db_user_password
+    ports:
+      - "8083:8080"
+    restart: always
+    depends_on:
+      - mysql_cars
+    networks:
+      - keycloak_network
+    volumes:
+      - ./realm:/opt/keycloak/data/import
+networks:
+  keycloak_network:
+    driver: bridge
